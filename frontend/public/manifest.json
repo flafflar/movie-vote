@@ -1,0 +1,9 @@
+{
+  "short_name": "Movie Vote",
+  "name": "Movie Vote",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#F2ECD7"
+}
