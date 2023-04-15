@@ -22,6 +22,40 @@ function initDB(connection){
 
         console.log("Table 'movies' created successfully");
     });
+
+    // This table is used to store all the valid users that are allowed to use
+    // the app
+    connection.query(`CREATE TABLE IF NOT EXISTS users (
+        id int NOT NULL AUTO_INCREMENT,
+        username varchar(255) NOT NULL,
+        PRIMARY KEY (id)
+    )`, (err, results, fields) => {
+        if (err) throw err;
+
+        console.log("Table 'users' created successfully");
+    })
+
+    // This table stores all the authentication tokens generated for each user
+    connection.query(`CREATE TABLE IF NOT EXISTS user_tokens (
+        user_id int NOT NULL,
+        token varchar(36) NOT NULL UNIQUE,
+        expires datetime NOT NULL,
+        CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES users(id)
+    )`, (err, results, fields) => {
+        if (err) throw err;
+
+        console.log("Table 'user_tokens' created successfully");
+    })
+
+    // This event automatically deletes expired tokens
+    connection.query(`CREATE EVENT IF NOT EXISTS expired_user_tokens_delete
+        ON SCHEDULE EVERY 1 HOUR DO
+        DELETE FROM user_tokens WHERE expires <= CURRENT_TIMESTAMP()
+    `, (err, results, fields) => {
+        if (err) throw err;
+
+        console.log("Event 'expired_user_tokens_delete' created successfully");
+    })
 }
 
 // Create the connection
