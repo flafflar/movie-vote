@@ -35,4 +35,19 @@ router.get('/movies', checkAuthTokenMiddleware, (req, res) => {
     })
 })
 
+router.get('/votes', checkAuthTokenMiddleware, (req, res) => {
+    db.query(`SELECT movies.id, count(votes.user_id) AS votes FROM votes
+        RIGHT JOIN movies ON votes.movie_id = movies.id
+        GROUP BY movies.id
+    `, (err, results, fields) => {
+        if (err) {
+            res.status(500);
+            res.json({error: err});
+            return;
+        }
+
+        res.json(results);
+    })
+})
+
 module.exports = router;
