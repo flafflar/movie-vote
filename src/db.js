@@ -56,6 +56,18 @@ function initDB(connection){
 
         console.log("Event 'expired_user_tokens_delete' created successfully");
     })
+
+    // This table stores all the votes
+    connection.query(`CREATE TABLE IF NOT EXISTS votes (
+        movie_id int NOT NULL,
+        user_id int NOT NULL,
+        CONSTRAINT FK_movie_id FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT FK_vote_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+    )`, (err, results, fields) => {
+        if (err) throw err;
+
+        console.log("Table 'votes' created successfully");
+    })
 }
 
 // Create the connection
