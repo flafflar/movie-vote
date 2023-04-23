@@ -31,7 +31,7 @@ function checkUserAuthToken(token, callback){
 	db.query(`SELECT user_id FROM user_tokens WHERE token = ?`, [token], (err, results, fields) => {
 		if (err) return callback(err);
 
-		callback(null, results.length !== 0);
+		callback(null, results.length !== 0, results[0].user_id);
 	})
 }
 

@@ -10,13 +10,14 @@ router.use(express.json());
 router.use(cookieParser());
 
 function checkAuthTokenMiddleware(req, res, next) {
-	checkUserAuthToken(req.cookies.auth_id, (err, valid) => {
+	checkUserAuthToken(req.cookies.auth_id, (err, valid, id) => {
 		if (err) throw err;
 
 		if (!valid){
 			res.status(401);
 			res.end();
 		} else {
+            req.userId = id;
 			next();
 		}
 	})
