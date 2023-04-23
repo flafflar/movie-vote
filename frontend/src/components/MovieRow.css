@@ -43,6 +43,48 @@
 	bottom: 0;
 	left: 0;
 	right: 0;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: end;
+
+	/* Hide the bar unless the vote is cast */
+	visibility: hidden;
+}
+
+/* Show the bar when the vote is cast */
+.voted .vote-bar-container {
+	visibility: visible !important;
+}
+
+.vote-bar-container .vote-bar {
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0; /* Same as height: 100% */
+
+	/* Make the bar the same size as the vote button
+	 * to make the transition more graceful */
+	width: 55px;
+
+	background-color: #B7AB99;
+
+	transition: width 1s;
+}
+
+/* Transition to the */
+.voted .vote-bar {
+	width: unset;
+}
+
+.vote-bar-container .votes-text {
+	color: #FFFFFF;
+	width: 55px;
+	text-align: center;
+
+	/* Display on top of the bar */
+	z-index: 2;
 }
 
 /* Make text selection invisible */
@@ -67,4 +109,9 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+}
+
+.voted .vote-button {
+	/* Hide when voted */
+	visibility: hidden;
 }
