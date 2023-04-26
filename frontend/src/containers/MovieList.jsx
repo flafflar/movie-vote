@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { getMovies, getVotes } from '../api/client';
+import { getMovies, getVotes, castVote, getHasVoted } from '../api/client';
 
 import MovieRow from '../components/MovieRow';
 
@@ -10,14 +10,19 @@ export default function MovieList() {
 	const [movies, setMovies] = useState(undefined);
 	const [votes, setVotes] = useState([]);
 
-	const [voted, setVoted] = useState(false);
+	const [voted, setVoted] = useState(null);
+
+	if (voted === null){
+		// TODO: Error handling
+		getHasVoted().then(hasVoted => setVoted(hasVoted)).catch(err => console.error(err));
+	}
 
 	if (movies === undefined){
 		// TODO: Error handling
 		getMovies().then(movies => setMovies(movies)).catch(err => console.error(err));
 	}
 
-	if (votes.length === 0){
+	if (voted && votes.length === 0){
 		// TODO: Error handling
 		getVotes().then(votes => setVotes(votes)).catch(err => console.error(err));
 	}
@@ -31,7 +36,11 @@ export default function MovieList() {
 			posterUrl={movie.posterImageUrl}
 			totalVotes={voted ? totalVotes : 0}
 			votes={votes.find(v => v.id === movie.id)?.votes}
-			onVote={() => setVoted(true)}
+			onVote={() => {
+				castVote(movie.id).then(() => {
+					setVoted(true)
+				}).catch(err => console.log(err));
+			}}
 		/>
 	)
 
