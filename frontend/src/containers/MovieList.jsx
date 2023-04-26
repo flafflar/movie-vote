@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getMovies, getVotes, castVote, getHasVoted } from '../api/client';
 
@@ -12,20 +12,25 @@ export default function MovieList() {
 
 	const [voted, setVoted] = useState(null);
 
-	if (voted === null){
-		// TODO: Error handling
-		getHasVoted().then(hasVoted => setVoted(hasVoted)).catch(err => console.error(err));
-	}
+	useEffect(() => {
+		if (voted === null){
+			// TODO: Error handling
+			getHasVoted().then(hasVoted => setVoted(hasVoted)).catch(err => console.error(err));
+		}
+	}, [voted]);
 
-	if (movies === undefined){
-		// TODO: Error handling
-		getMovies().then(movies => setMovies(movies)).catch(err => console.error(err));
-	}
+	useEffect(() => {
+		if (movies === undefined){
+			// TODO: Error handling
+			getMovies().then(movies => setMovies(movies)).catch(err => console.error(err));
+		}
+	}, [movies]);
 
-	if (voted && votes.length === 0){
-		// TODO: Error handling
-		getVotes().then(votes => setVotes(votes)).catch(err => console.error(err));
-	}
+	useEffect(() => {
+		if (voted){
+			getVotes().then(votes => setVotes(votes)).catch(err => console.error(err));
+		}
+	}, [voted]);
 
 	const totalVotes = votes.reduce((sum, v) => sum + v.votes, 0);
 
