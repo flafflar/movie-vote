@@ -1,24 +1,23 @@
 .button {
-    display: inline-block;
-    padding: 7px 14px;
-    border: 3px solid #B7AB99;
-    border-radius: 7px;
+	display: inline-block;
+	padding: 7px 14px;
+	border: 3px solid #B7AB99;
+	border-radius: 7px;
 
-    color: #91887A;
+	color: #91887A;
 
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .button:active {
-    background-color: #B7AB99;
-    color: #FFFFFF;
+	background-color: #B7AB99;
+	color: #FFFFFF;
 }
 
 .button::selection, .button *::selection {
-    background: transparent;
+	background: transparent;
 }
 
 .button .icon {
-    margin-right: 14px;
+	margin-right: 14px;
 }
-
