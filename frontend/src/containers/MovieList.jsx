@@ -34,6 +34,7 @@ export default function MovieList() {
 			key={movie.id}
 			title={movie.title}
 			posterUrl={movie.posterImageUrl}
+			enableVoting={voted ? votes.length > 0 : true}
 			totalVotes={voted ? totalVotes : 0}
 			votes={votes.find(v => v.id === movie.id)?.votes}
 			onVote={() => {
