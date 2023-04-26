@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export async function getMovies() {
-	let res = await axios.get(`/api/movies`);
+	let res = await axios.get(`${process.env.PUBLIC_URL}/api/movies`);
 
 	if (res.status !== 200){
 		// TODO
@@ -12,7 +12,7 @@ export async function getMovies() {
 }
 
 export async function getHasVoted() {
-	let res = await axios.get('/api/votes/user');
+	let res = await axios.get(`${process.env.PUBLIC_URL}/api/votes/user`);
 
 	// TODO: Error handling
 	if (res.status !== 200){
@@ -23,7 +23,7 @@ export async function getHasVoted() {
 }
 
 export async function getVotes() {
-	let res = await axios.get('/api/votes');
+	let res = await axios.get(`${process.env.PUBLIC_URL}/api/votes`);
 
 	if (res.status !== 200){
 		// TODO
@@ -34,7 +34,7 @@ export async function getVotes() {
 }
 
 export async function castVote(movieId) {
-	let res = await axios.post(`/api/votes/movie/${movieId}`);
+	let res = await axios.post(`${process.env.PUBLIC_URL}/api/votes/movie/${movieId}`);
 
 	if (res.status !== 200) {
 		// TODO
