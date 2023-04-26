@@ -10,14 +10,12 @@ const oauthRoute = require('./routes/oauth');
 
 const PORT = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
-    res.end();
-})
+app.use('/', express.static('frontend/build'))
 
 app.use('/api', apiRoute);
 
 app.use('/oauth', oauthRoute);
 
 app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+	console.log(`Server listening on port ${PORT}`);
 });
