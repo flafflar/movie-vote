@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 		client_secret: process.env.INSTAGRAM_APP_SECRET,
 		code: req.query.code,
 		grant_type: 'authorization_code',
-		redirect_uri: 'https://localhost:3000/oauth'
+		redirect_uri: `${process.env.PUBLIC_URL}oauth`
 	})).then((response) => {
 		const userId = response.data.user_id;
 		const accessToken = response.data.access_token;
@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
 				if (err) throw err;
 
 				res.cookie('auth_id', token, {expires});
-				res.redirect('/');
+				res.redirect(process.env.PUBLIC_URL);
 			});
 
 		}).catch((err) => console.error(err));
