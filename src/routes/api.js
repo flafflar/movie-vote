@@ -10,14 +10,17 @@ router.use(express.json());
 router.use(cookieParser());
 
 function checkAuthTokenMiddleware(req, res, next) {
-	checkUserAuthToken(req.cookies.auth_id, (err, valid, id) => {
+	checkUserAuthToken(req.cookies.auth_id, (err, valid, userId, isAdmin) => {
 		if (err) throw err;
 
 		if (!valid){
 			res.status(401);
 			res.end();
 		} else {
-			req.userId = id;
+			req.userInfo = {
+				id: userId,
+				isAdmin: isAdmin
+			}
 			next();
 		}
 	})
@@ -71,7 +74,7 @@ router.get('/votes/movie/:movieId', checkAuthTokenMiddleware, (req, res) => {
 router.post('/votes/movie/:movieId', checkAuthTokenMiddleware, (req, res) => {
 	// Check if the user has already voted
 	db.query(`SELECT COUNT(user_id) AS count FROM votes WHERE user_id = ?`,
-	[req.userId], (err, results, fields) => {
+	[req.userInfo.id], (err, results, fields) => {
 		if (err) {
 			res.status(500);
 			res.json({error: err});
@@ -85,7 +88,7 @@ router.post('/votes/movie/:movieId', checkAuthTokenMiddleware, (req, res) => {
 		}
 
 		db.query(`INSERT INTO votes(movie_id, user_id) VALUES (?, ?)`,
-		[req.params.movieId, req.userId], (err, results, fields) => {
+		[req.params.movieId, req.userInfo.id], (err, results, fields) => {
 			if (err) {
 				res.status(500);
 				res.json({error: err});
@@ -101,7 +104,7 @@ router.post('/votes/movie/:movieId', checkAuthTokenMiddleware, (req, res) => {
  * the user has already voted or not. */
 router.get('/votes/user', checkAuthTokenMiddleware, (req, res) => {
 	db.query(`SELECT movie_id FROM votes WHERE user_id = ?`,
-	[req.userId], (err, results, fields) => {
+	[req.userInfo.id], (err, results, fields) => {
 		if (err) {
 			res.status(500);
 			res.json({error: err});

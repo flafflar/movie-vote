@@ -23,15 +23,28 @@ function generateUserAuthToken(username, callback){
 }
 
 /**
+ * @callback CheckUserAuthTokenCallback
+ * @param {Error | null} err
+ * @param {boolean} valid Whether the token is valid.
+ * @param {number | undefined} id The id of the authenticated user.
+ * @param {boolean | undefined} isAdmin Whether the authenticated user is an 
+ * admin.
+ */
+
+/**
  * Checks if an authentication token is valid.
  *
  * @param {string} token The token to check.
+ * @param {CheckUserAuthTokenCallback} callback
  */
 function checkUserAuthToken(token, callback){
-	db.query(`SELECT user_id FROM user_tokens WHERE token = ?`, [token], (err, results, fields) => {
+	db.query(`SELECT users.id, users.is_admin FROM user_tokens 
+		INNER JOIN users ON user_tokens.user_id = users.id 
+		WHERE token = ?`,
+	[token], (err, results, fields) => {
 		if (err) return callback(err);
 
-		callback(null, results.length !== 0, results[0].user_id);
+		callback(null, results.length !== 0, results[0].id, results[0].is_admin);
 	})
 }
 
