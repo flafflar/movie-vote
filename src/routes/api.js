@@ -65,7 +65,7 @@ router.put('/movies/:movieId', checkAuthTokenMiddleware, checkAdminMiddleware, (
 		return;
 	}
 
-	db.query(`UPDATE movies SET (title,posterImageUrl) = (?,?) WHERE id = ?`,
+	db.query(`UPDATE movies SET title = ?, posterImageUrl = ? WHERE id = ?`,
 	[req.body.title, req.body.posterImageUrl, req.params.movieId], (err, results, fields) => {
 		if (err) {
 			res.status(500); // Internal Server Error
