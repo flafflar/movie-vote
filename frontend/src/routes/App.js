@@ -8,13 +8,7 @@ import './App.css';
 function App() {
 	const isLoggedIn = !!Cookie.get('auth_id');
 
-	return (
-		<div className="app">
-			<div className='main-content'>{
-				isLoggedIn ? <MovieList /> : <LoginList />
-			}</div>
-		</div>
-	);
+	return isLoggedIn ? <MovieList /> : <LoginList />;
 }
 
 export default App;

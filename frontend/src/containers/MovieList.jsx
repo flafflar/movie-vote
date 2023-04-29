@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import { getMovies, getVotes, castVote, getHasVoted } from '../api/client';
+import { getVotes, castVote, getHasVoted } from '../api/client';
 
+import { MoviesContext } from "../Main";
 import MovieRow from '../components/MovieRow';
 import Spinner from '../components/Spinner';
 
 import './MovieList.css';
 
 export default function MovieList() {
-	const [movies, setMovies] = useState(undefined);
+	const {movies} = useContext(MoviesContext);
+
 	const [votes, setVotes] = useState([]);
 
 	const [voted, setVoted] = useState(null);
@@ -19,13 +21,6 @@ export default function MovieList() {
 			getHasVoted().then(hasVoted => setVoted(hasVoted)).catch(err => console.error(err));
 		}
 	}, [voted]);
-
-	useEffect(() => {
-		if (movies === undefined){
-			// TODO: Error handling
-			getMovies().then(movies => setMovies(movies)).catch(err => console.error(err));
-		}
-	}, [movies]);
 
 	useEffect(() => {
 		if (voted){

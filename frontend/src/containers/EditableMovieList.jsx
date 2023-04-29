@@ -1,22 +1,15 @@
-import { useEffect, useState } from 'react';
-import { getMovies } from '../api/client';
+import { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faPlusSquare } from '@fortawesome/free-regular-svg-icons';
 
+import { MoviesContext } from '../Main';
 import MovieRow from '../components/MovieRow';
 import IconButton from '../components/IconButton';
 
 import './MovieList.css';
 
 export default function EditableMovieList() {
-	const [movies, setMovies] = useState(undefined);
-
-	useEffect(() => {
-		if (movies === undefined){
-			// TODO: Error handling
-			getMovies().then(movies => setMovies(movies)).catch(err => console.error(err))
-		}
-	}, [movies]);
+	const {movies} = useContext(MoviesContext);
 
 	const movieRows = movies?.map(movie => (
 		<MovieRow
