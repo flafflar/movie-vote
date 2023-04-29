@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { getMovies } from '../api/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
+import { faPenToSquare, faPlusSquare } from '@fortawesome/free-regular-svg-icons';
 
 import MovieRow from '../components/MovieRow';
+import IconButton from '../components/IconButton';
 
 import './MovieList.css';
 
@@ -31,5 +32,13 @@ export default function EditableMovieList() {
 		/>
 	))
 
-	return <div className="movie-list">{movieRows}</div>
+	return <>
+		<div className="movie-list">
+			{movieRows}
+		</div>
+		<IconButton
+			icon={<FontAwesomeIcon icon={faPlusSquare} size='xl' />}
+			text="Add new"
+		/>
+	</>
 }

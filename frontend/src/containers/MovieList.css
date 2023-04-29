@@ -4,6 +4,8 @@
 
 	width: 100%;
 	max-width: 540px;
+
+	margin-bottom: 9px;
 }
 
 .movie-row .movie-info .action-button {
