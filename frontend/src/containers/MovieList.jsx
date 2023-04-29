@@ -44,7 +44,7 @@ export default function MovieList() {
 			votes={votes.find(v => v.id === movie.id)?.votes}
 			actionElement={
 				<div
-					className="vote-button"
+					className="action-button vote-button"
 					onClick={() => {
 						if (voted === false) {
 							// Set the voted to null to indicate that it is 
