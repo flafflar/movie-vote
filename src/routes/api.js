@@ -26,6 +26,19 @@ function checkAuthTokenMiddleware(req, res, next) {
 	})
 }
 
+/**
+ * Only allows admin users to proceed, and throws `401 Unautorized` at non-admin
+ * users.
+ */
+function checkAdminMiddleware(req, res, next) {
+	if (!req.userInfo.isAdmin) {
+		res.status(401); // Unauthorized
+		res.end();
+	} else {
+		next();
+	}
+}
+
 router.get('/movies', checkAuthTokenMiddleware, (req, res) => {
 	db.query('SELECT id, title, posterImageUrl FROM movies', (err, results, fields) => {
 		if (err) {
@@ -36,6 +49,32 @@ router.get('/movies', checkAuthTokenMiddleware, (req, res) => {
 
 		const data = results.map(row => row);
 		res.json(data);
+	})
+})
+
+/* Changes information about a movie */
+router.put('/movies/:movieId', checkAuthTokenMiddleware, checkAdminMiddleware, (req, res) => {
+	// First, verify the sent body
+	let missingFields = [];
+	if (!req.body.title) missingFields.push('title');
+	if (!req.body.posterImageUrl) missingFields.push('posterImageUrl');
+
+	if (missingFields.length > 0){
+		res.status(400); // Bad Request
+		res.json({error: `Missing fields: ${missingFields.join(', ')}`})
+		return;
+	}
+
+	db.query(`UPDATE movies SET (title,posterImageUrl) = (?,?) WHERE id = ?`,
+	[req.body.title, req.body.posterImageUrl, req.params.movieId], (err, results, fields) => {
+		if (err) {
+			res.status(500); // Internal Server Error
+			res.json({error: err});
+			return;
+		}
+
+		// TODO: Maybe check whether anything actually got updated?
+		res.end();
 	})
 })
 

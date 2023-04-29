@@ -11,6 +11,18 @@ export async function getMovies() {
 	return res.data;
 }
 
+export async function updateMovie(id, title, posterImageUrl) {
+	let res = await axios.put(`${process.env.PUBLIC_URL}/api/movies/${id}`, {
+		title,
+		posterImageUrl
+	});
+
+	if (res.status !== 200){
+		// TODO
+		throw res.status;
+	}
+}
+
 export async function getHasVoted() {
 	let res = await axios.get(`${process.env.PUBLIC_URL}/api/votes/user`);
 
