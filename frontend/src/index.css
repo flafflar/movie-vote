@@ -11,6 +11,10 @@ html, body {
 	height: 100%;
 }
 
+.hidden {
+	display: none !important;
+}
+
 .title {
 	font-size: 1.33em;
 	color: #91887A;
