@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getMovies, getVotes, castVote, getHasVoted } from '../api/client';
 
 import MovieRow from '../components/MovieRow';
+import Spinner from '../components/Spinner';
 
 import './MovieList.css';
 
@@ -39,14 +40,37 @@ export default function MovieList() {
 			key={movie.id}
 			title={movie.title}
 			posterUrl={movie.posterImageUrl}
-			enableVoting={voted ? votes.length > 0 : true}
 			totalVotes={voted ? totalVotes : 0}
 			votes={votes.find(v => v.id === movie.id)?.votes}
-			onVote={() => {
-				castVote(movie.id).then(() => {
-					setVoted(true)
-				}).catch(err => console.log(err));
-			}}
+			actionElement={
+				<div
+					className="vote-button"
+					onClick={() => {
+						if (voted === false) {
+							// Set the voted to null to indicate that it is 
+							// unknown whether the voting has succeeded. This
+							// will also cause the spinner to display.
+							setVoted(null);
+
+							castVote(movie.id).then(() => {
+								setVoted(true);
+							}).catch(err => {
+								setVoted(false);
+								console.error(err)
+							});
+						}
+					}}
+				>{
+					// Display a spinner either when:
+					// - Not yet determined whether the user can vote (voted is 
+					//   null).
+					// - The user has voted (or is in the process of voting) and
+					//   the votes have not been loaded yet.
+					voted === null || (voted !== false && votes.length === 0)
+					? <Spinner size='36px' />
+					: 'Vote'
+				}</div>
+			}
 		/>
 	)
 

@@ -1,8 +1,9 @@
 import './MovieRow.css';
-import Spinner from './Spinner';
 
-export default function MovieRow({ title, posterUrl, enableVoting, votes, totalVotes, onVote }){
+export default function MovieRow({ title, posterUrl, votes, totalVotes, actionElement }){
 	const voted = totalVotes != 0;
+
+	// const actionElement = <div className="vote-button" onClick={() => enableVoting && onVote()}>{enableVoting ? 'Vote' : <Spinner size='36px' />}</div>;
 
 	return (
 		<div className="movie-row">
@@ -12,9 +13,7 @@ export default function MovieRow({ title, posterUrl, enableVoting, votes, totalV
 			<div className={"movie-details " + (voted ? "voted" : "")}>
 				<div className="movie-info">
 					<div className="movie-title">{title}</div>
-					<div className="vote-button" onClick={() => enableVoting && onVote()}>{
-						enableVoting ? 'Vote' : <Spinner size='36px' />
-					}</div>
+					{actionElement}
 				</div>
 				<div className="vote-bar-container">
 					<div
