@@ -9,9 +9,19 @@
 	cursor: pointer;
 }
 
+.button.inverted {
+	background-color: #B7AB99;
+	color: #FFFFFF
+}
+
 .button:active {
 	background-color: #B7AB99;
 	color: #FFFFFF;
+}
+
+.button.inverted:active {
+	background-color: #F2ECD7;
+	color: #91887A;
 }
 
 .button::selection, .button *::selection {
