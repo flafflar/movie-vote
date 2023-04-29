@@ -1,7 +1,7 @@
 import Cookie from 'js-cookie';
 
-import MovieList from './containers/MovieList';
-import LoginList from './components/LoginList';
+import MovieList from '../containers/MovieList';
+import LoginList from '../components/LoginList';
 
 import './App.css';
 
