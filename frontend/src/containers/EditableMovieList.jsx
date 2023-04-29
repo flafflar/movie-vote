@@ -6,7 +6,7 @@ import { MoviesContext } from '../Main';
 import MovieRow from '../components/MovieRow';
 import IconButton from '../components/IconButton';
 import ModalWindow from '../components/ModalWindow';
-import MovieEditor from './MovieEditor';
+import MovieEditor from '../components/MovieEditor';
 
 import './MovieList.css';
 
@@ -14,7 +14,7 @@ export default function EditableMovieList() {
 	const {movies} = useContext(MoviesContext);
 
 	const [showModal, setShowModal] = useState(false);
-	const [modalMovieId, setModalMovieId] = useState(null);
+	const [modalMovie, setModalMovie] = useState(null);
 
 	const movieRows = movies?.map(movie => (
 		<MovieRow
@@ -24,7 +24,7 @@ export default function EditableMovieList() {
 			totalVotes={0}
 			actionElement={
 				<div className='action-button' onClick={() => {
-					setModalMovieId(movie.id);
+					setModalMovie(movie);
 					setShowModal(true);
 				}}>
 					<FontAwesomeIcon icon={faPenToSquare} size='xl' />
@@ -46,7 +46,12 @@ export default function EditableMovieList() {
 			show={showModal}
 			onHide={() => setShowModal(false)}
 		>
-			<MovieEditor forMovieId={modalMovieId} />
+			<MovieEditor 
+				title={modalMovie?.title}
+				posterUrl={modalMovie?.posterImageUrl}
+				onCancel={() => setShowModal(false)}
+				onSubmit={(data) => void 0}
+			/>
 		</ModalWindow>
 	</>
 }
