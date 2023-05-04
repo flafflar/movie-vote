@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 
 const db = require('./db').connection;
 
@@ -12,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use('/', express.static('frontend/build'))
 
-app.get('/admin', (req, res) => res.sendFile('frontend/build/index.html'))
+app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, '../frontend/build/index.html')))
 
 app.use('/api', apiRoute);
 
