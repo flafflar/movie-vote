@@ -52,6 +52,25 @@ router.get('/movies', checkAuthTokenMiddleware, (req, res) => {
 	})
 })
 
+/* Posts a new movie */
+router.post('/movies', checkAuthTokenMiddleware, checkAdminMiddleware, (req, res) => {
+	// First, verify the sent body
+	let missingFields = [];
+	if (!req.body.title) missingFields.push('title');
+	if (!req.body.posterImageUrl) missingFields.push('posterImageUrl');
+
+	if (missingFields.length > 0){
+		res.status(400); // Bad Request
+		res.json({error: `Missing fields: ${missingFields.join(', ')}`})
+		return;
+	}
+
+	db.query(`INSERT INTO movies(title, posterImageUrl) VALUES (?, ?)`,
+	[req.body.title, req.body.posterImageUrl], (err, results, fields) => {
+		res.json({id: results.insertId});
+	})
+})
+
 /* Changes information about a movie */
 router.put('/movies/:movieId', checkAuthTokenMiddleware, checkAdminMiddleware, (req, res) => {
 	// First, verify the sent body

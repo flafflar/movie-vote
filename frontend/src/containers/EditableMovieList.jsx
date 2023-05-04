@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faPlusSquare } from '@fortawesome/free-regular-svg-icons';
 
-import { updateMovie } from '../api/client';
+import { createMovie, updateMovie } from '../api/client';
 import { MoviesContext } from '../Main';
 import MovieRow from '../components/MovieRow';
 import IconButton from '../components/IconButton';
@@ -18,7 +18,11 @@ export default function EditableMovieList() {
 	const [modalMovie, setModalMovie] = useState(null);
 
 	function submitMovie(movieId, details) {
-		updateMovie(movieId, details.title, details.posterUrl).then(() => {
+		let action = movieId
+			? updateMovie(movieId, details.title, details.posterUrl)
+			: createMovie(details.title, details.posterUrl)
+
+		action.then(() => {
 			fetchMovies();
 			setShowModal(false);
 		}).catch((err) => console.error(err));
@@ -48,15 +52,19 @@ export default function EditableMovieList() {
 		<IconButton
 			icon={<FontAwesomeIcon icon={faPlusSquare} size='xl' />}
 			text="Add new"
+			onClick={() => {
+				setModalMovie(null);
+				setShowModal(true);
+			}}
 		/>
 		<ModalWindow
 			title="Edit movie"
 			show={showModal}
 			onHide={() => setShowModal(false)}
 		>
-			<MovieEditor 
-				title={modalMovie?.title}
-				posterUrl={modalMovie?.posterImageUrl}
+			<MovieEditor
+				title={modalMovie?.title || ''}
+				posterUrl={modalMovie?.posterImageUrl || ''}
 				onCancel={() => setShowModal(false)}
 				onSubmit={(details) => submitMovie(modalMovie?.id, details)}
 			/>
