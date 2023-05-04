@@ -16,7 +16,7 @@ const router = createBrowserRouter([
 		path: '/admin',
 		element: <Admin />
 	}
-])
+], {basename: new URL(process.env.PUBLIC_URL).pathname})
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
