@@ -10,17 +10,33 @@ router.use(express.json());
 router.use(cookieParser());
 
 function checkAuthTokenMiddleware(req, res, next) {
-	checkUserAuthToken(req.cookies.auth_id, (err, valid, id) => {
+	checkUserAuthToken(req.cookies.auth_id, (err, valid, userId, isAdmin) => {
 		if (err) throw err;
 
 		if (!valid){
 			res.status(401);
 			res.end();
 		} else {
-			req.userId = id;
+			req.userInfo = {
+				id: userId,
+				isAdmin: isAdmin
+			}
 			next();
 		}
 	})
+}
+
+/**
+ * Only allows admin users to proceed, and throws `401 Unautorized` at non-admin
+ * users.
+ */
+function checkAdminMiddleware(req, res, next) {
+	if (!req.userInfo.isAdmin) {
+		res.status(401); // Unauthorized
+		res.end();
+	} else {
+		next();
+	}
 }
 
 router.get('/movies', checkAuthTokenMiddleware, (req, res) => {
@@ -33,6 +49,66 @@ router.get('/movies', checkAuthTokenMiddleware, (req, res) => {
 
 		const data = results.map(row => row);
 		res.json(data);
+	})
+})
+
+/* Posts a new movie */
+router.post('/movies', checkAuthTokenMiddleware, checkAdminMiddleware, (req, res) => {
+	// First, verify the sent body
+	let missingFields = [];
+	if (!req.body.title) missingFields.push('title');
+	if (!req.body.posterImageUrl) missingFields.push('posterImageUrl');
+
+	if (missingFields.length > 0){
+		res.status(400); // Bad Request
+		res.json({error: `Missing fields: ${missingFields.join(', ')}`})
+		return;
+	}
+
+	db.query(`INSERT INTO movies(title, posterImageUrl) VALUES (?, ?)`,
+	[req.body.title, req.body.posterImageUrl], (err, results, fields) => {
+		res.json({id: results.insertId});
+	})
+})
+
+/* Changes information about a movie */
+router.put('/movies/:movieId', checkAuthTokenMiddleware, checkAdminMiddleware, (req, res) => {
+	// First, verify the sent body
+	let missingFields = [];
+	if (!req.body.title) missingFields.push('title');
+	if (!req.body.posterImageUrl) missingFields.push('posterImageUrl');
+
+	if (missingFields.length > 0){
+		res.status(400); // Bad Request
+		res.json({error: `Missing fields: ${missingFields.join(', ')}`})
+		return;
+	}
+
+	db.query(`UPDATE movies SET title = ?, posterImageUrl = ? WHERE id = ?`,
+	[req.body.title, req.body.posterImageUrl, req.params.movieId], (err, results, fields) => {
+		if (err) {
+			res.status(500); // Internal Server Error
+			res.json({error: err});
+			return;
+		}
+
+		// TODO: Maybe check whether anything actually got updated?
+		res.end();
+	})
+})
+
+/* Deletes a movie */
+router.delete('/movies/:movieId', checkAuthTokenMiddleware, checkAdminMiddleware, (req, res) => {
+	db.query(`DELETE FROM movies WHERE id = ?`,
+	[req.params.movieId], (err, results, fields) => {
+		if (err) {
+			res.status(500);
+			res.json({error: err});
+			return;
+		}
+
+		res.status(200);
+		res.end();
 	})
 })
 
@@ -71,7 +147,7 @@ router.get('/votes/movie/:movieId', checkAuthTokenMiddleware, (req, res) => {
 router.post('/votes/movie/:movieId', checkAuthTokenMiddleware, (req, res) => {
 	// Check if the user has already voted
 	db.query(`SELECT COUNT(user_id) AS count FROM votes WHERE user_id = ?`,
-	[req.userId], (err, results, fields) => {
+	[req.userInfo.id], (err, results, fields) => {
 		if (err) {
 			res.status(500);
 			res.json({error: err});
@@ -85,7 +161,7 @@ router.post('/votes/movie/:movieId', checkAuthTokenMiddleware, (req, res) => {
 		}
 
 		db.query(`INSERT INTO votes(movie_id, user_id) VALUES (?, ?)`,
-		[req.params.movieId, req.userId], (err, results, fields) => {
+		[req.params.movieId, req.userInfo.id], (err, results, fields) => {
 			if (err) {
 				res.status(500);
 				res.json({error: err});
@@ -101,7 +177,7 @@ router.post('/votes/movie/:movieId', checkAuthTokenMiddleware, (req, res) => {
  * the user has already voted or not. */
 router.get('/votes/user', checkAuthTokenMiddleware, (req, res) => {
 	db.query(`SELECT movie_id FROM votes WHERE user_id = ?`,
-	[req.userId], (err, results, fields) => {
+	[req.userInfo.id], (err, results, fields) => {
 		if (err) {
 			res.status(500);
 			res.json({error: err});

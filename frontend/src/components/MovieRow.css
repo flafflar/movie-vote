@@ -97,21 +97,3 @@
 
 	color: #91887A;
 }
-
-.movie-row .movie-info .vote-button {
-	width: 55px;
-	height: 100%;
-	background-color: #B7AB99;
-	color: #FFFFFF;
-	cursor: pointer;
-
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-}
-
-.voted .vote-button {
-	/* Hide when voted */
-	visibility: hidden;
-}

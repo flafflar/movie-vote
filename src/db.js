@@ -28,6 +28,7 @@ function initDB(connection){
 	connection.query(`CREATE TABLE IF NOT EXISTS users (
 		id int NOT NULL AUTO_INCREMENT,
 		username varchar(255) NOT NULL,
+		is_admin boolean NOT NULL,
 		PRIMARY KEY (id)
 	)`, (err, results, fields) => {
 		if (err) throw err;

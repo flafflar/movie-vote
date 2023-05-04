@@ -11,6 +11,16 @@ html, body {
 	height: 100%;
 }
 
+input[type=text], input[type=url] {
+	border: 2px solid #B7AB99;
+	border-radius: 3px;
+	background-color: hsl(47, 51%, 96%);
+}
+
+.hidden {
+	display: none !important;
+}
+
 .title {
 	font-size: 1.33em;
 	color: #91887A;

@@ -1,0 +1,54 @@
+.modal-window-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+
+	background-color: rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+
+	/* Center the modal */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-window {
+	width: 50%;
+	height: 50%;
+
+	background-color: #F2ECD7;
+	color: #91887A;
+
+	border-radius: 3px;
+	
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
+	align-items: stretch;
+}
+
+.modal-window .modal-top-bar {
+	display: flex;
+	flex-direction: row;
+
+	margin: 5px 6px 0 6px;
+	padding: 6px 8px;
+
+	border-bottom: 1px solid #91887A;
+}
+
+.modal-top-bar .modal-title {
+	flex-grow: 1;
+}
+
+.modal-top-bar .modal-close-icon {
+	cursor: pointer;
+}
+
+.modal-window .modal-content {
+	flex-grow: 1;
+
+	margin: 0 8px 8px 8px;
+}
