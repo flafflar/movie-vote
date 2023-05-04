@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faPlusSquare } from '@fortawesome/free-regular-svg-icons';
+import { faPenToSquare, faPlusSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
-import { createMovie, updateMovie } from '../api/client';
+import { createMovie, deleteMovie, updateMovie } from '../api/client';
 import { MoviesContext } from '../Main';
 import MovieRow from '../components/MovieRow';
 import IconButton from '../components/IconButton';
@@ -35,12 +35,21 @@ export default function EditableMovieList() {
 			posterUrl={movie.posterImageUrl}
 			totalVotes={0}
 			actionElement={
-				<div className='action-button' onClick={() => {
-					setModalMovie(movie);
-					setShowModal(true);
-				}}>
-					<FontAwesomeIcon icon={faPenToSquare} size='xl' />
-				</div>
+				<>
+					<div className='action-button' onClick={() => {
+						setModalMovie(movie);
+						setShowModal(true);
+					}}>
+						<FontAwesomeIcon icon={faPenToSquare} size='xl' />
+					</div>
+					<div className='action-button' onClick={() => {
+						deleteMovie(movie.id).then(() => {
+							fetchMovies();
+						}).catch((err) => console.error(err));
+					}}>
+						<FontAwesomeIcon icon={faTrashCan} size='xl' />
+					</div>
+				</>
 			}
 		/>
 	))
