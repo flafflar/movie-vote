@@ -97,6 +97,21 @@ router.put('/movies/:movieId', checkAuthTokenMiddleware, checkAdminMiddleware, (
 	})
 })
 
+/* Deletes a movie */
+router.delete('/movies/:movieId', checkAuthTokenMiddleware, checkAdminMiddleware, (req, res) => {
+	db.query(`DELETE FROM movies WHERE id = ?`,
+	[req.params.movieId], (err, results, fields) => {
+		if (err) {
+			res.status(500);
+			res.json({error: err});
+			return;
+		}
+
+		res.status(200);
+		res.end();
+	})
+})
+
 router.get('/votes', checkAuthTokenMiddleware, (req, res) => {
 	db.query(`SELECT movies.id, count(votes.user_id) AS votes FROM votes
 		RIGHT JOIN movies ON votes.movie_id = movies.id
