@@ -12,6 +12,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use('/', express.static('frontend/build'))
 
+app.get('/admin', (req, res) => res.sendFile('frontend/build/index.html'))
+
 app.use('/api', apiRoute);
 
 app.use('/oauth', oauthRoute);
